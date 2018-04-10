@@ -5,5 +5,5 @@
 .Ruserdata
 
 #data
-.csv
-.Rds
+*.csv
+*.Rds
