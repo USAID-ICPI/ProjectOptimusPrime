@@ -25,9 +25,6 @@
   #keep just HTS and HTS_POS Total Numerator
     df_zam <- df_zam %>% 
       filter(indicator =="HTS_TST", standardizeddisaggregate == "Modality/MostCompleteAgeDisagg", fundingagency == "USAID")
-  
-  # determine current pd
-    curr_pd <- currentpd(df_zam)
     
   #combine facility/community names into one column & add type col
     df_zam <- df_zam %>% 
@@ -45,22 +42,32 @@
   #group and aggregate
     # determine current pd to aggregate
     curr_pd <- currentpd(df_zam)
+    
     #aggregate with select variables
-    df_agg <- df_zam %>% 
+    df_zam <- df_zam %>% 
       group_by(operatingunit, snu1, psnu, psnuuid, site_name, site_type, orgunituid, mechanismid, primepartner, 
-             implementingmechanismname, indicator, modality) %>% 
-      summarise(pd = !!curr_pd, na.rm == "TRUE") %>% 
+             implementingmechanismname, indicator, modality, resultstatus) %>% 
+      summarise_at(vars(!!!curr_pd), ~ sum(., na.rm = TRUE)) %>% 
       ungroup()
 
     #remove blank rows
+    df_zam <- df_zam %>% 
+      filter(fy2018q1 != 0) #TODO - convert fy2018q1 to var, curr_pd
+        
+      
+    #spread & create total, positibity
+    df_zam <- df_zam %>% 
+      spread(resultstatus, fy2018q1, fill = 0)
     
-    #spread
-    
+    df_zam <- df_zam %>% 
+      rename_all(tolower) %>% 
+      mutate(total = negative + positive,
+             positivity = round(positive/total, 3))
 
 # Export ------------------------------------------------------------------
 
   #export file to feed into tool
     #fs::dir_create("Output")
-    write_csv(df_zam, "Output/zam_hts.csv", na = "")
+    write_csv(df_zam, "Output/zam_hts_mod.csv", na = "")
   
   
