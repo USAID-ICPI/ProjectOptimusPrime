@@ -7,6 +7,10 @@
 # Dependencies ------------------------------------------------------------
 
   library(tidyverse)
+  # install.packages("devtools")
+  # library("devtools")
+  # install_github("achafetz/PartnerProgress")
+  library(genPPR)
 
 
 # Import ------------------------------------------------------------------
@@ -22,12 +26,36 @@
     df_zam <- df_zam %>% 
       filter(indicator =="HTS_TST", standardizeddisaggregate == "Modality/MostCompleteAgeDisagg", fundingagency == "USAID")
   
-  #remove blank rows
+  # determine current pd
+    curr_pd <- currentpd(df_zam)
     
-  #combine facility/community names
-  
-  #select key variables needed
+  #combine facility/community names into one column & add type col
+    df_zam <- df_zam %>% 
+      mutate(site_name = case_when(
+              typefacility == "Y"   ~ facility,
+              typecommunity == "Y"  ~ community,
+              typemilitary=="Y"     ~ psnu,
+              TRUE                  ~ operatingunit),
+            site_type = case_when(
+              typefacility == "Y"   ~ "facility",
+              typecommunity == "Y"  ~ "community",
+              typemilitary=="Y"     ~ "mil")
+      )
+    
+  #group and aggregate
+    # determine current pd to aggregate
+    curr_pd <- currentpd(df_zam)
+    #aggregate with select variables
+    df_agg <- df_zam %>% 
+      group_by(operatingunit, snu1, psnu, psnuuid, site_name, site_type, orgunituid, mechanismid, primepartner, 
+             implementingmechanismname, indicator, modality) %>% 
+      summarise(pd = !!curr_pd, na.rm == "TRUE") %>% 
+      ungroup()
 
+    #remove blank rows
+    
+    #spread
+    
 
 # Export ------------------------------------------------------------------
 
