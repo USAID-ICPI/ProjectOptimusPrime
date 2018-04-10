@@ -11,4 +11,7 @@ To read in the Zambia MER Structured Site Dataset as an Rds file, use the
 #import Zambia MER Structured Dataset and convert to Rds (smaller file size)
   ICPIutilities::read_mds("ICPI_MER_Structured_Dataset_Site_IM_Zambia_20180323_v2_1.txt", "RawData", remove_txt = TRUE)
   
-````
+```
+
+![optimus prime](https://rzzy0b736k-flywheel.netdna-ssl.com/wp-content/uploads/2017/07/TF_OP_11_cvrC.jpg)
+
