@@ -29,6 +29,6 @@ USAID/W: Aaron, Gina
 
 **Next Steps for Aaron & Gina**
 - [X] Notes in doc folder or wiki (gina)
-- [ ] Write code for fv, total numerator only (both)
-- [ ] Research what if (both)
-- [ ] Think about structure (both)
+- [X] Write code for fv, total numerator only (both)
+- [X] Research what if (both)
+- [X] Think about structure (both)
